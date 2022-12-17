@@ -36,6 +36,7 @@ module Jekyll
         set_description(page)
         set_icon_url(page)
         set_tags(page)
+        set_identifiers(page)
         set_overridden_columns_label(page)
 
         page.data["releases"].each { |release| enrich_release(page, release) }
@@ -82,6 +83,13 @@ module Jekyll
 
         tags << page.data['category']
         page.data['tags'] = tags
+      end
+
+      # Set identifiers to empty if it's not present.
+      def set_identifiers(page)
+        if !page.data['identifiers']
+          page.data['identifiers'] = []
+        end
       end
 
       # Set properly the column presence/label if it was overridden.

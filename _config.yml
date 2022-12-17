@@ -40,7 +40,7 @@ aux_links:
   source:
     - https://github.com/endoflife-date/endoflife.date
   api:
-    - /docs/api
+    - /docs/api/v1/
 jekyll_timeago:
   # Use 2 terms in relative timestamps:
   # [YES] x years, y months
