@@ -59,6 +59,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductListResponse'
 
+  /products/full/:
+    get:
+      summary: >
+        List all the products referenced on endoflife.date.
+        The full products' data is returned by this endpoint.
+      responses:
+        '200':
+          description: successful operation
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullProductListResponse'
+
   /products/{product}/:
     get:
       summary: >
@@ -423,6 +437,23 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductSummary'
+
+    FullProductListResponse:
+      type: object
+      properties:
+        schema_version:
+          type: string
+          description: Version of this schema.
+          example: 1.0.0
+        total:
+          type: integer
+          format: int32
+          description: Number of products in the list.
+          example: 1
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductDetails'
 
     ProductCycleResponse:
       type: object

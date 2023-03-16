@@ -77,6 +77,7 @@ module ApiV1
 
     def add_products_related_pages(site, products)
       add_all_products_page(site, products)
+      add_all_products_and_cycles_page(site, products)
 
       products.each do |page|
         add_product_page(site, page)
@@ -86,7 +87,11 @@ module ApiV1
     end
 
     def add_all_products_page(site, products)
-      site.pages << JsonPage.of_products(site, '/products/', products)
+      site.pages << JsonPage.of_products_summary(site, '/products/', products)
+    end
+
+    def add_all_products_and_cycles_page(site, products)
+      site.pages << JsonPage.of_products_details(site, '/products/full/', products)
     end
 
     def add_product_page(site, product)
@@ -118,7 +123,7 @@ module ApiV1
     end
 
     def add_category_page(site, category, products)
-      site.pages << JsonPage.of_products(site, "/categories/#{category}", products)
+      site.pages << JsonPage.of_products_summary(site, "/categories/#{category}", products)
     end
 
     def add_all_categories_page(site, categories)
@@ -145,7 +150,7 @@ module ApiV1
     end
 
     def add_tag_page(site, tag, products)
-      site.pages << JsonPage.of_products(site, "/tags/#{tag}", products)
+      site.pages << JsonPage.of_products_summary(site, "/tags/#{tag}", products)
     end
 
     def add_all_tags_page(site, tags)
@@ -171,8 +176,14 @@ module ApiV1
         new(site, path, data, metadata)
       end
 
-      def of_products(site, path, products)
+      def of_products_summary(site, path, products)
         data = products.map { |product| product_summary_to_json(site, product) }
+        meta = { total: products.size() }
+        new(site, path, data, meta)
+      end
+
+      def of_products_details(site, path, products)
+        data = products.map { |product| product_to_json(site, product) }
         meta = { total: products.size() }
         new(site, path, data, meta)
       end
