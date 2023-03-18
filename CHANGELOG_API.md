@@ -7,10 +7,11 @@ v1:
 
 - feels more _Restful_ (#2431),
 - expose almost all product's data (#394, #759, #2062, #2595),
+- expose new metadata such as schema version (#2331), counts (for lists) or last modified date,
+- is easier to consume thanks to new computed fields such as `is_maintained`,
 - provide new endpoints (#2078, #2160, #2530)
 - is versioned using the `api/v1` prefix (#2066), making it easier to implement
   non-backward-compatible changes in the future,
-- expose new metadata such as schema version (#2331), counts (for lists) or last modified date,
 - is documented using [swagger-ui](https://swagger.io/tools/swagger-ui/) instead of [Stoplight
   Elements WebComponent](https://github.com/stoplightio/elements/blob/main/docs/getting-started/elements/html.md)
   (#905),

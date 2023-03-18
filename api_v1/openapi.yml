@@ -312,6 +312,11 @@ components:
           nullable: true
           description: End of extended support date, or true / false to indicate whether or not the product cycle is still in the extended support phase.
           example: "2029-08-15"
+        isMaintained:
+          type: boolean
+          nullable: false
+          description: Whether or not this cycle still have some level of support. This could be any level of support, even extended support.
+          example: true
         latest:
           type: object
           $ref: '#/components/schemas/ProductVersion'

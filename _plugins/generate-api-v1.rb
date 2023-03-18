@@ -245,6 +245,7 @@ module ApiV1
           eol: cycle['eol'],
           discontinued: cycle['discontinued'],
           extendedSupport: cycle['extendedSupport'],
+          isMaintained: cycle['is_maintained'],
           latest: {
             name: cycle['latest'],
             date: cycle['latestReleaseDate'],
