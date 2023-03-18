@@ -2,17 +2,28 @@
 
 ### Summary
 
-API v1 is a major rework of the API v0 with a lot of breaking changes. Compared to the API v0, API v1:
+API v1 is a major rework of the API v0 with a lot of breaking changes. Compared to the API v0, API
+v1:
 
-- feels more "Restful",
-- is versioned using the `api/v1` prefix, making it easier to implement non-backward-compatible
-  changes,
-- is generated using a Jekyll Generator (see https://jekyllrb.com/docs/plugins/generators/).
+- feels more _Restful_ (#2431),
+- expose almost all product's data (#394, #759, #2062, #2595),
+- provide new endpoints (#2078, #2160, #2530)
+- is versioned using the `api/v1` prefix (#2066), making it easier to implement
+  non-backward-compatible changes in the future,
+- expose new metadata such as schema version (#2331), counts (for lists) or last modified date,
+- is documented using [swagger-ui](https://swagger.io/tools/swagger-ui/) instead of [Stoplight
+  Elements WebComponent](https://github.com/stoplightio/elements/blob/main/docs/getting-started/elements/html.md)
+  (#905),
+- but reverts #2425 due to incompatibilities in redirect rules.
 
-API v1 resolves : #394, #759, #905, #2062, #2066, #2078, #2160, #2331, #2431, #2595. It also reverts
-#2425 due to incompatibilities in redirect rules.
+The API v1 is now generated using a Jekyll Generator (see https://jekyllrb.com/docs/plugins/generators/)
+instead of a custom script.
 
-The API v0 is still generated to give time to users to migrate to API v1.
+Note that the API v0 is still generated to give time to users to migrate to API v1. It will be
+decommissioned one year after the API v1 release date (TODO : provide exact date).
+
+API v1 documentation can be seen on <https://endoflife.date/docs/api/v1/>.
+The old API v0 documentation can still be seen on <https://endoflife.date/docs/api/>.
 
 ### Changes in the "All products" endpoint
 
