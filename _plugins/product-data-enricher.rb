@@ -1,5 +1,28 @@
 # This plugin enriches the product pages by setting or precomputing its metadata, so that it can be
-# easily consumed in layouts or plugins (such as the APIv1 plugin).
+# easily consumed in layouts or plugins (such as the API v1 plugin).
+#
+# Naming conventions:
+# - Raw fields, declared in product's markdown front matter or derived from a template (such as the
+#   changelogTemplate), use the camel case notation (example: endOfLife).
+# - Computed fields, injected by ProductDataEnricher, use the snake case notation (example: end_of_life).
+#
+# Here is a list of computed fields :
+# - is_maintained (in cycles) : whether the product cycle is still supported (mandatory)
+# - can_be_hidden (in cycles) : whether the product cycle can be hidden when displaying the product page (mandatory)
+# - is_lts (in cycles) : whether the product cycle is currently in its LTS phase (mandatory)
+# - lts_from (in cycles) : the LTS phase start date for the product cycle (optional, only if lts is a Date)
+# - is_supported (in cycles) : whether the product cycle is currently supported (optional, only if support is set)
+# - supported_until (in cycles) : end of the product cycle support phase date (optional, only if support is set to a Date)
+# - is_eol (in cycles) : whether the product cycle is currently eol (optional, only if eol is set)
+# - eol_from (in cycles) : EOL date of the product cycle (optional, only if eol is set to a Date)
+# - is_discontinued (in cycles) : whether the product cycle is currently discontinued (optional, only if discontinued is set)
+# - discontinued_from (in cycles) : discontinuation date of the product cycle (optional, only if discontinued is set to a Date)
+# - is_extended_supported (in cycles) : whether the product cycle is currently extended supported (optional, only if extendedSupport is set)
+# - extended_supported_until (in cycles) : end of the product cycle extended support phase date (optional, only if extendedSupport is set to a Date)
+# - days_toward_support (in cycles) : number of days toward the end of support for the cycle (optional, only if support is set)
+# - days_toward_eol (in cycles) : number of days toward the EOL of the cycle (optional, only if eol is set)
+# - days_toward_discontinued (in cycles) : number of days toward the discontinuation of the cycle (optional, only if discontinued is set)
+# - days_toward_extendedSupport (in cycles) : number of days toward the end of extended support for the cycle (optional, only if extendedSupport is set)
 module Jekyll
   class ProductDataEnricher
     class << self
@@ -143,10 +166,14 @@ module Jekyll
 
       def enrich_release(page, cycle)
         set_cycle_id(cycle)
-        set_cycle_lts(cycle)
+        set_cycle_lts_fields(cycle)
+        set_cycle_support_fields(cycle)
+        set_cycle_extended_support_fields(cycle)
+        set_cycle_eol_fields(cycle)
+        set_cycle_discontinued_fields(cycle)
         set_cycle_link(page, cycle)
         set_cycle_label(page, cycle)
-        add_lts_label_to_cycle_label(page, cycle)
+        add_lts_label_to_cycle_label(page, cycle) # must be called after set_cycle_lts
         compute_days_toward_now_for_all_dates(cycle)
         set_is_maintained(cycle) # must be called after compute_days_toward_now_for_all_dates
       end
@@ -156,9 +183,92 @@ module Jekyll
         cycle['id'] = cycle['releaseCycle'].tr('/', '-')
       end
 
-      def set_cycle_lts(cycle)
-        if !cycle['lts']
+      # The lts field can either be a Date or a boolean.
+      # This function sets the field to false if it was not,
+      # and injects is_lts (boolean) and lts_from (Date) fields to simplify future usages.
+      def set_cycle_lts_fields(cycle)
+        if not cycle.has_key?('lts')
           cycle['lts'] = false
+        end
+
+        lts = cycle['lts']
+        if lts.is_a?(Date)
+          cycle['is_lts'] = (Date.today >= lts)
+          cycle['lts_from'] = lts
+        else
+          cycle['is_lts'] = lts
+          cycle['lts_from'] = nil
+        end
+      end
+
+      # The support field can either be a Date or a boolean.
+      # This function injects is_supported (boolean) and supported_until (Date) fields to simplify
+      # future usages.
+      def set_cycle_support_fields(cycle)
+        if not cycle.has_key?('support')
+          return
+        end
+
+        support = cycle['support']
+        if support.is_a?(Date)
+          cycle['is_supported'] = (Date.today <= support)
+          cycle['supported_until'] = support
+        else
+          cycle['is_supported'] = support
+          cycle['supported_until'] = nil
+        end
+      end
+
+      # The extendedSupport field can either be a Date or a boolean.
+      # This function injects is_extended_supported (boolean) and extended_supported_until (Date)
+      # fields to simplify future usages.
+      def set_cycle_extended_support_fields(cycle)
+        if not cycle.has_key?('extendedSupport')
+          return
+        end
+
+        extended_support = cycle['extendedSupport']
+        if extended_support.is_a?(Date)
+          cycle['is_extended_supported'] = (Date.today <= extended_support)
+          cycle['extended_supported_until'] = extended_support
+        else
+          cycle['is_extended_supported'] = extended_support
+          cycle['extended_supported_until'] = nil
+        end
+      end
+
+      # The eol field can either be a Date or a boolean.
+      # This function injects is_eol (boolean) and eol_from (Date) fields to simplify future usages.
+      def set_cycle_eol_fields(cycle)
+        if not cycle.has_key?('eol')
+          return
+        end
+
+        eol = cycle['eol']
+        if eol.is_a?(Date)
+          cycle['is_eol'] = (Date.today > eol)
+          cycle['eol_from'] = eol
+        else
+          cycle['is_eol'] = eol
+          cycle['eol_from'] = nil
+        end
+      end
+
+      # The discontinued field can either be a Date or a boolean.
+      # This function injects is_discontinued (boolean) and discontinued_from (Date) fields to
+      # simplify future usages.
+      def set_cycle_discontinued_fields(cycle)
+        if not cycle.has_key?('discontinued')
+          return
+        end
+
+        discontinued = cycle['discontinued']
+        if discontinued.is_a?(Date)
+          cycle['is_discontinued'] = (Date.today > discontinued)
+          cycle['discontinued_from'] = discontinued
+        else
+          cycle['is_discontinued'] = discontinued
+          cycle['discontinued_from'] = nil
         end
       end
 
@@ -185,31 +295,27 @@ module Jekyll
       end
 
       def add_lts_label_to_cycle_label(page, cycle)
-        if cycle['lts']
-          lts = cycle['lts']
-          lts_label = page.data['LTSLabel']
+        lts_label = page.data['LTSLabel']
 
-          if lts == true
+        if cycle['lts_from']
+          if cycle['is_lts']
             cycle['label'] = "#{cycle['label']} (#{lts_label})"
-          elsif lts.respond_to?(:strftime) # lts is a date
-            if lts > Date.today
-              cycle['label'] = "#{cycle['label']} (<span title=\"#{lts.iso8601}\">Upcoming</span> #{lts_label})"
-            else
-              cycle['label'] = "#{cycle['label']} (#{lts_label})"
-            end
+          else
+            cycle['label'] = "#{cycle['label']} (<span title=\"#{cycle['lts_from'].iso8601}\">Upcoming</span> #{lts_label})"
           end
+        elsif cycle['is_lts']
+          cycle['label'] = "#{cycle['label']} (#{lts_label})"
         end
       end
 
       # Compute the number of days toward now for all cycle's dates (support, eol...), and add those
-      # values to the cycle's data in new fields (daysTowardSupport, daysTowardEol...).
+      # values to the cycle's data in new fields (days_toward_support, days_toward_eol...).
       def compute_days_toward_now_for_all_dates(cycle)
         for field in ['support', 'eol', 'discontinued', 'extendedSupport']
           next if not cycle.has_key?(field)
 
           field_value = cycle[field] # either a date or a boolean
-          new_field_name = 'daysToward' + field
-          new_field_name[10] = new_field_name[10].upcase! # daysTowardeol => daysTowardEol
+          new_field_name = 'days_toward_' + field
 
           if field_value.is_a?(Date)
             cycle[new_field_name] = days_toward_now(field_value)
@@ -231,7 +337,7 @@ module Jekyll
       def set_is_maintained(cycle)
         is_maintained = false
 
-        for daysTowardField in ['daysTowardSupport', 'daysTowardEol', 'daysTowardDiscontinued', 'daysTowardExtendedSupport']
+        for daysTowardField in ['days_toward_support', 'days_toward_eol', 'days_toward_discontinued', 'days_toward_extendedSupport']
           if cycle.has_key?(daysTowardField) and cycle[daysTowardField] >= 0
             is_maintained = true
             break
