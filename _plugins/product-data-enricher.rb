@@ -11,14 +11,14 @@
 # - can_be_hidden (in cycles) : whether the product cycle can be hidden when displaying the product page (mandatory)
 # - is_lts (in cycles) : whether the product cycle is currently in its LTS phase (mandatory)
 # - lts_from (in cycles) : the LTS phase start date for the product cycle (optional, only if lts is a Date)
-# - is_supported (in cycles) : whether the product cycle is currently supported (optional, only if support is set)
-# - supported_until (in cycles) : end of the product cycle support phase date (optional, only if support is set to a Date)
+# - is_active_support_over (in cycles) : whether the product cycle has reach the end of active support (optional, only if support is set)
+# - active_support_until (in cycles) : end of the product cycle support phase date (optional, only if support is set to a Date)
 # - is_eol (in cycles) : whether the product cycle is currently eol (optional, only if eol is set)
 # - eol_from (in cycles) : EOL date of the product cycle (optional, only if eol is set to a Date)
 # - is_discontinued (in cycles) : whether the product cycle is currently discontinued (optional, only if discontinued is set)
 # - discontinued_from (in cycles) : discontinuation date of the product cycle (optional, only if discontinued is set to a Date)
-# - is_extended_supported (in cycles) : whether the product cycle is currently extended supported (optional, only if extendedSupport is set)
-# - extended_supported_until (in cycles) : end of the product cycle extended support phase date (optional, only if extendedSupport is set to a Date)
+# - is_extended_support_over (in cycles) : whether the product cycle has reach the end of extended support (optional, only if extendedSupport is set)
+# - extended_support_until (in cycles) : end of the product cycle extended support phase date (optional, only if extendedSupport is set to a Date)
 # - days_toward_support (in cycles) : number of days toward the end of support for the cycle (optional, only if support is set)
 # - days_toward_eol (in cycles) : number of days toward the EOL of the cycle (optional, only if eol is set)
 # - days_toward_discontinued (in cycles) : number of days toward the discontinuation of the cycle (optional, only if discontinued is set)
@@ -167,7 +167,7 @@ module Jekyll
       def enrich_release(page, cycle)
         set_cycle_id(cycle)
         set_cycle_lts_fields(cycle)
-        set_cycle_support_fields(cycle)
+        set_cycle_active_support_fields(cycle)
         set_cycle_extended_support_fields(cycle)
         set_cycle_eol_fields(cycle)
         set_cycle_discontinued_fields(cycle)
@@ -202,25 +202,25 @@ module Jekyll
       end
 
       # The support field can either be a Date or a boolean.
-      # This function injects is_supported (boolean) and supported_until (Date) fields to simplify
-      # future usages.
-      def set_cycle_support_fields(cycle)
+      # This function injects is_active_support_over (boolean) and active_support_until (Date)
+      # fields to simplify future usages.
+      def set_cycle_active_support_fields(cycle)
         if not cycle.has_key?('support')
           return
         end
 
         support = cycle['support']
         if support.is_a?(Date)
-          cycle['is_supported'] = (Date.today <= support)
-          cycle['supported_until'] = support
+          cycle['is_active_support_over'] = (Date.today > support)
+          cycle['active_support_until'] = support
         else
-          cycle['is_supported'] = support
-          cycle['supported_until'] = nil
+          cycle['is_active_support_over'] = support
+          cycle['active_support_until'] = nil
         end
       end
 
       # The extendedSupport field can either be a Date or a boolean.
-      # This function injects is_extended_supported (boolean) and extended_supported_until (Date)
+      # This function injects is_extended_support_over (boolean) and extended_support_until (Date)
       # fields to simplify future usages.
       def set_cycle_extended_support_fields(cycle)
         if not cycle.has_key?('extendedSupport')
@@ -229,11 +229,11 @@ module Jekyll
 
         extended_support = cycle['extendedSupport']
         if extended_support.is_a?(Date)
-          cycle['is_extended_supported'] = (Date.today <= extended_support)
-          cycle['extended_supported_until'] = extended_support
+          cycle['is_extended_support_over'] = (Date.today > extended_support)
+          cycle['extended_support_until'] = extended_support
         else
-          cycle['is_extended_supported'] = extended_support
-          cycle['extended_supported_until'] = nil
+          cycle['is_extended_support_over'] = extended_support
+          cycle['extended_support_until'] = nil
         end
       end
 
