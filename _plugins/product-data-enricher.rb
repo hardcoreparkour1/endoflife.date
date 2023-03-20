@@ -190,7 +190,7 @@ module Jekyll
       def set_cycle_id(cycle)
         cycle['id'] = cycle['releaseCycle'].tr('/', '-')
       end
-      
+
       # Set lts to false if it has no value and explode it to is_lts (boolean) and lts_from (Date).
       # See explode_date_or_boolean_field(...) for more information.
       def set_cycle_lts_fields(cycle)

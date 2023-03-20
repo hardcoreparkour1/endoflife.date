@@ -271,46 +271,61 @@ components:
         date:
           type: string
           format: date
-          description: Date of the first version of the cycle.
+          description: Release date of the cycle.
           example: "2021-08-14"
-        support:
-          oneOf:
-            - type: string
-              format: date
-            - type: boolean
+        isLts:
+          ype: boolean
+          description: Whether the product cycle is LTS.
+          example: true
+        ltsFrom:
+          type: string
+          format: date
           nullable: true
-          description: End of active support date, or true / false to indicate whether or not the product cycle is still supported.
+          description: Start date of the LTS phase.
           example: "2021-08-14"
-        lts:
-          oneOf:
-            - type: string
-              format: date
-            - type: boolean
+        isActiveSupportOver:
+          type: boolean
           nullable: true
-          description: Start date of the LTS phase, or true / false to indicate whether or not the product cycle is LTS.
+          description: Whether the active support phase is over.
+          example: true
+        activeSupportUntil:
+          type: string
+          format: date
+          nullable: true
+          description: End date of the active support phase.
           example: "2021-08-14"
-        eol:
-          oneOf:
-            - type: string
-              format: date
-            - type: boolean
-          description: End of life date, or true / false to indicate whether or not the product cycle is EOL.
+        isEol:
+          type: boolean
+          nullable: true
+          description: Whether the product cycle is EOL.
+          example: true
+        eolFrom:
+          type: string
+          format: date
+          nullable: true
+          description: End of life date for the product cycle.
           example: "2026-08-15"
-        discontinued:
-          oneOf:
-            - type: string
-              format: date
-            - type: boolean
+        isDiscontinued:
+          type: boolean
           nullable: true
-          description: Discontinued date, or true / false to indicate whether or not the product cycle is discontinued (mainly used for hardware).
+          description: Whether the product cycle is discontinued (mainly used for hardware).
+          example: true
+        discontinuedFrom:
+          type: string
+          format: date
+          nullable: true
+          description: Discontinuation date (mainly used for hardware).
           example: "2026-08-15"
-        extendedSupport:
-          oneOf:
-            - type: string
-              format: date
-            - type: boolean
+        isExtendedSupportOver:
+          type: boolean
           nullable: true
-          description: End of extended support date, or true / false to indicate whether or not the product cycle is still in the extended support phase.
+          description: Whether the extended support phase is over.
+          example: true
+        extendedSupportUntil:
+          type: string
+          format: date
+          nullable: true
+          description: End date of the extended support phase.
           example: "2029-08-15"
         isMaintained:
           type: boolean
