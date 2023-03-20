@@ -182,93 +182,60 @@ module Jekyll
       def set_cycle_id(cycle)
         cycle['id'] = cycle['releaseCycle'].tr('/', '-')
       end
-
-      # The lts field can either be a Date or a boolean.
-      # This function sets the field to false if it was not,
-      # and injects is_lts (boolean) and lts_from (Date) fields to simplify future usages.
+      
+      # Set lts to false if it has no value and explode it to is_lts (boolean) and lts_from (Date).
+      # See explode_date_or_boolean_field(...) for more information.
       def set_cycle_lts_fields(cycle)
         if not cycle.has_key?('lts')
           cycle['lts'] = false
         end
 
-        lts = cycle['lts']
-        if lts.is_a?(Date)
-          cycle['is_lts'] = (Date.today >= lts)
-          cycle['lts_from'] = lts
-        else
-          cycle['is_lts'] = lts
-          cycle['lts_from'] = nil
-        end
+        explode_date_or_boolean_field(cycle, 'lts', 'is_lts', 'lts_from')
       end
 
-      # The support field can either be a Date or a boolean.
-      # This function injects is_active_support_over (boolean) and active_support_until (Date)
-      # fields to simplify future usages.
+      # Explode support to is_active_support_over (boolean) and active_support_until (Date).
+      # See explode_date_or_boolean_field(...) for more information.
       def set_cycle_active_support_fields(cycle)
-        if not cycle.has_key?('support')
-          return
-        end
-
-        support = cycle['support']
-        if support.is_a?(Date)
-          cycle['is_active_support_over'] = (Date.today > support)
-          cycle['active_support_until'] = support
-        else
-          cycle['is_active_support_over'] = support
-          cycle['active_support_until'] = nil
-        end
+        explode_date_or_boolean_field(cycle, 'support', 'is_active_support_over', 'active_support_until', true)
       end
 
-      # The extendedSupport field can either be a Date or a boolean.
-      # This function injects is_extended_support_over (boolean) and extended_support_until (Date)
-      # fields to simplify future usages.
+      # Explode extendedSupport to is_extended_support_over (boolean) and extended_support_until (Date).
+      # See explode_date_or_boolean_field(...) for more information.
       def set_cycle_extended_support_fields(cycle)
-        if not cycle.has_key?('extendedSupport')
-          return
-        end
-
-        extended_support = cycle['extendedSupport']
-        if extended_support.is_a?(Date)
-          cycle['is_extended_support_over'] = (Date.today > extended_support)
-          cycle['extended_support_until'] = extended_support
-        else
-          cycle['is_extended_support_over'] = extended_support
-          cycle['extended_support_until'] = nil
-        end
+        explode_date_or_boolean_field(cycle, 'extendedSupport', 'is_extended_support_over', 'extended_support_until', true)
       end
 
-      # The eol field can either be a Date or a boolean.
-      # This function injects is_eol (boolean) and eol_from (Date) fields to simplify future usages.
+      # Explode eol to is_eol (boolean) and eol_from (Date).
+      # See explode_date_or_boolean_field(...) for more information.
       def set_cycle_eol_fields(cycle)
-        if not cycle.has_key?('eol')
-          return
-        end
-
-        eol = cycle['eol']
-        if eol.is_a?(Date)
-          cycle['is_eol'] = (Date.today > eol)
-          cycle['eol_from'] = eol
-        else
-          cycle['is_eol'] = eol
-          cycle['eol_from'] = nil
-        end
+        explode_date_or_boolean_field(cycle, 'eol', 'is_eol', 'eol_from')
       end
 
-      # The discontinued field can either be a Date or a boolean.
-      # This function injects is_discontinued (boolean) and discontinued_from (Date) fields to
-      # simplify future usages.
+      # Explode discontinued to is_discontinued (boolean) and discontinued_from (Date).
+      # See explode_date_or_boolean_field(...) for more information.
       def set_cycle_discontinued_fields(cycle)
-        if not cycle.has_key?('discontinued')
+        explode_date_or_boolean_field(cycle, 'discontinued', 'is_discontinued', 'discontinued_from')
+      end
+
+      # Some product cycle fields (field_name) can be either a date or a boolean.
+      # This function create two additional variables, one of boolean type (boolean_field_name) and
+      # the other of Date type (date_field_name) to simplify usages in templates or Jekyll plugins.
+      #
+      # The invert parameter must be set according to the date nature. If it's a start date
+      # (example : the eol field) set it to false, if it's an end date (example : the support field)
+      # set it to true.
+      def explode_date_or_boolean_field(cycle, field_name, boolean_field_name, date_field_name, invert = false)
+        if not cycle.has_key?(field_name)
           return
         end
 
-        discontinued = cycle['discontinued']
-        if discontinued.is_a?(Date)
-          cycle['is_discontinued'] = (Date.today > discontinued)
-          cycle['discontinued_from'] = discontinued
+        value = cycle[field_name]
+        if value.is_a?(Date)
+          cycle[boolean_field_name] = (Date.today > value)
+          cycle[date_field_name] = value
         else
-          cycle['is_discontinued'] = discontinued
-          cycle['discontinued_from'] = nil
+          cycle[boolean_field_name] = invert ? !value : value
+          cycle[date_field_name] = nil
         end
       end
 
