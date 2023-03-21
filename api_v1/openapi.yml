@@ -228,11 +228,11 @@ components:
         name:
           type: type
           description: Type of the identifier (types as of 2023-03 are repology, purl and cpe)
-          example: purl
+          example: cpe
         id:
           type: string
           description: Identifier
-          example: cpe:/o:almalinux:almalinux
+          example: cpe:/o:canonical:ubuntu_linux
 
     ProductVersion:
       type: object
@@ -240,17 +240,17 @@ components:
         name:
           type: string
           description: Name of the version.
-          example: "11.6"
+          example: "22.04.2"
         date:
           type: string
           format: date
           description: Release date.
-          example: "2022-12-17"
+          example: "2022-04-21"
         link:
           type: string
           format: uri
           description: Link to the changelog or release notes.
-          example: https://www.debian.org/News/2022/2022091002
+          example: https://wiki.ubuntu.com/JammyJellyfish/ReleaseNotes/
 
     ProductCycle:
       type: object
@@ -258,21 +258,21 @@ components:
         name:
           type: string
           description: Name of the product cycle.
-          example: "11"
+          example: "22.04"
         codename:
           type: string
           nullable: true
           description: Name of the product cycle.
-          example: Bullseye
+          example: Jammy Jellyfish
         label:
           type: string
           description: Label of the product cycle.
-          example: 11 (Bullseye) (Upcoming LTS)
+          example: 22.04 'Jammy Jellyfish' (LTS)
         date:
           type: string
           format: date
           description: Release date of the cycle.
-          example: "2021-08-14"
+          example: "2022-04-21"
         isLts:
           ype: boolean
           description: Whether the product cycle is LTS.
@@ -282,40 +282,40 @@ components:
           format: date
           nullable: true
           description: Start date of the LTS phase.
-          example: "2021-08-14"
+          example: "2022-04-21"
         isActiveSupportOver:
           type: boolean
           nullable: true
           description: Whether the active support phase is over.
-          example: true
+          example: false
         activeSupportUntil:
           type: string
           format: date
           nullable: true
           description: End date of the active support phase.
-          example: "2021-08-14"
+          example: "2024-09-30"
         isEol:
           type: boolean
           nullable: true
           description: Whether the product cycle is EOL.
-          example: true
+          example: false
         eolFrom:
           type: string
           format: date
           nullable: true
           description: End of life date for the product cycle.
-          example: "2026-08-15"
+          example: "2027-04-01"
         isDiscontinued:
           type: boolean
           nullable: true
           description: Whether the product cycle is discontinued (mainly used for hardware).
-          example: true
+          example: false
         discontinuedFrom:
           type: string
           format: date
           nullable: true
           description: Discontinuation date (mainly used for hardware).
-          example: "2026-08-15"
+          example: "2027-04-01"
         isExtendedSupportOver:
           type: boolean
           nullable: true
@@ -324,9 +324,9 @@ components:
         extendedSupportUntil:
           type: string
           format: date
-          nullable: true
+          nullable: false
           description: End date of the extended support phase.
-          example: "2029-08-15"
+          example: "2032-04-09"
         isMaintained:
           type: boolean
           nullable: false
@@ -342,11 +342,11 @@ components:
         name:
           type: string
           description: Name of the product
-          example: debian
+          example: ubuntu
         label:
           type: string
           description: Label of the product
-          example: Debian GNU/Linux
+          example: Ubuntu
         category:
           type: string
           description: Category of the product
@@ -360,7 +360,7 @@ components:
           type: string
           format: uri
           description: Link to the full product details
-          example: {{ site.url }}/api/v1/products/debian/
+          example: {{ site.url }}/api/v1/products/ubuntu/
 
     ProductDetails:
       type: object
@@ -368,11 +368,11 @@ components:
         name:
           type: string
           description: Name of the product
-          example: debian
+          example: ubuntu
         label:
           type: string
           description: Label of the product
-          example: Debian GNU/Linux
+          example: Ubuntu
         category:
           type: string
           description: Category of the product
@@ -386,7 +386,7 @@ components:
         versionCommand:
           type: string
           description: Command that can be used to check the current product version.
-          example: cat /etc/os-release
+          example: lsb_release --release
         identifiers:
           type: array
           description: Known identifiers (purl, repology, cpe...) associated to the product
@@ -400,7 +400,7 @@ components:
               type: string
               nullable: true
               description: Label used to denote the active support phase.
-              example: Active Support
+              example: Hardware & Maintenance
             discontinued:
               type: string
               nullable: true
@@ -410,12 +410,12 @@ components:
               type: string
               nullable: true
               description: Label used to denote the phase before the EOL of the product.
-              example: Supported
+              example: Maintenance & Security Support
             extendedSupport:
               type: string
               nullable: true
               description: Label used to denote the extended support phase.
-              example: Extended Support
+              example: Extended Security Maintenance
         links:
           type: object
           description: Product links.
@@ -425,18 +425,18 @@ components:
               format: uri
               nullable: true
               description: Link to the product icon (on https://simpleicons.org/).
-              example: https://simpleicons.org/icons/debian.svg
+              example: https://simpleicons.org/icons/ubuntu.svg
             html:
               type: string
               format: uri
               description: Link to the product page on endoflife.date.
-              example: https://endoflife.date/debian
+              example: https://endoflife.date/ubuntu
             releasePolicy:
               type: string
               format: uri
               nullable: true
               description: Link to the product release policy.
-              example: https://wiki.debian.org/DebianReleases
+              example: https://wiki.ubuntu.com/Releases
         cycles:
           type: array
           description: Product release cycles.
@@ -454,7 +454,7 @@ components:
           type: integer
           format: int32
           description: Number of uri in the list.
-          example: 1
+          example: 3
         result:
           type: array
           items:
@@ -471,7 +471,7 @@ components:
           type: integer
           format: int32
           description: Number of products in the list.
-          example: 1
+          example: 200
         result:
           type: array
           items:
@@ -488,7 +488,7 @@ components:
           type: integer
           format: int32
           description: Number of products in the list.
-          example: 1
+          example: 200
         result:
           type: array
           items:
