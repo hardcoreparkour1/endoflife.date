@@ -9,13 +9,6 @@
 # Setting a layout forces Jekyll to render this file
 layout: null
 ---
-# Rewrite for /api/v1/ to keep URLs clean.
-# All API responses are located in an index.json and must be accessible without the file name, such as:
-# - /api/v1/index.json -> /api/v1/
-# - /api/v1/products/almalinux/index.json -> /api/v1/products/almalinux/
-# This uses shadowing : https://docs.netlify.com/routing/redirects/rewrites-proxies/#shadowing.
-/api/v1/*       /api/v1/:splat/index.json       200!
-
 {% for page in site.pages -%}
 # Redirects for {{page.path}}
   {%- if page.alternate_urls %}
@@ -23,15 +16,26 @@ layout: null
 {{url}}       {{page.permalink}}
     {%- endfor %}
   {%- endif %}
-  {%- if page.layout == 'product'  %}
+  {%- if page.layout == 'product' %}
+{%- comment %}API v0 redirect{% endcomment %}
 /api{{page.permalink}}       /api{{page.permalink}}.json
     {%- if page.alternate_urls  %}
       {%- for url in page.alternate_urls %}
 /calendar{{url}}.ics       /calendar{{page.permalink}}.ics
 /api{{url}}.json       /api{{page.permalink}}.json
 /api{{url}}/*       /api{{page.permalink}}/:splat
+/api/v1/products{{url}}/*       /api/v1/products{{page.permalink}}/:splat
       {%- endfor %}
     {%- endif %}
   {%- endif %}
 
 {% endfor %}
+
+# Rewrite for /api/v1/ to keep URLs clean.
+# All API responses are located in an index.json and must be accessible without the file name, such as:
+# - /api/v1/index.json -> /api/v1/
+# - /api/v1/products/almalinux/index.json -> /api/v1/products/almalinux/
+# This uses shadowing : https://docs.netlify.com/routing/redirects/rewrites-proxies/#shadowing, and
+# it must be declared at the end of the file to not take precedence on the redirects (see
+# https://docs.netlify.com/routing/redirects/#rule-processing-order).
+/api/v1/*       /api/v1/:splat/index.json       200!
