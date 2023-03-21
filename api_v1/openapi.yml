@@ -393,6 +393,30 @@ components:
           items:
             $ref: '#/components/schemas/Identifier'
         # Additional properties (compared to ProductSummary)
+        labels:
+          type: object
+          description: Product labels.
+          properties:
+            activeSupport:
+              type: string
+              nullable: true
+              description: Label used to denote the active support phase.
+              example: Active Support
+            discontinued:
+              type: string
+              nullable: true
+              description: Label used to denote the discontinuation of the product.
+              example: Discontinued
+            eol:
+              type: string
+              nullable: true
+              description: Label used to denote the phase before the EOL of the product.
+              example: Supported
+            extendedSupport:
+              type: string
+              nullable: true
+              description: Label used to denote the extended support phase.
+              example: Extended Support
         links:
           type: object
           description: Product links.

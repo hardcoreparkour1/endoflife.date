@@ -208,12 +208,18 @@ module ApiV1
 
       def product_to_json(site, product)
         additional_details = {
+          versionCommand: product.data['versionCommand'],
+          labels: {
+            "activeSupport": product.data['activeSupportColumn'] ? ApiV1.strip_html(product.data['activeSupportColumnLabel']) : nil,
+            "discontinued": product.data['discontinuedColumn'] ? ApiV1.strip_html(product.data['discontinuedColumnLabel']) : nil,
+            "eol": product.data['eolColumn'] ? ApiV1.strip_html(product.data['eolColumnLabel']) : nil,
+            "extendedSupport": product.data['extendedSupportColumn'] ? ApiV1.strip_html(product.data['extendedSupportColumnLabel']) : nil,
+          },
           links: {
             icon: product.data['iconUrl'],
             html: ApiV1.site_url(site, "/#{product.data['id']}"),
             releasePolicy: product.data['releasePolicyLink'],
           },
-          versionCommand: product.data['versionCommand'],
           cycles: product.data['releases'].map { |cycle| cycle_to_json(cycle) }
         }
 
