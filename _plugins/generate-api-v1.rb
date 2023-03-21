@@ -209,6 +209,10 @@ module ApiV1
       def product_to_json(site, product)
         additional_details = {
           versionCommand: product.data['versionCommand'],
+          identifiers: product.data['identifiers'].map { |identifier| {
+            type: identifier.keys.first,
+            id: identifier.values.first
+          } },
           labels: {
             "activeSupport": product.data['activeSupportColumn'] ? ApiV1.strip_html(product.data['activeSupportColumnLabel']) : nil,
             "discontinued": product.data['discontinuedColumn'] ? ApiV1.strip_html(product.data['discontinuedColumnLabel']) : nil,
@@ -232,10 +236,6 @@ module ApiV1
           label: product.data['title'],
           category: product.data['category'],
           tags: product.data['tags'],
-          identifiers: product.data['identifiers'].map { |identifier| {
-            type: identifier.keys.first,
-            id: identifier.values.first
-          } },
           uri: ApiV1.api_url(site, "/products/#{product.data['id']}/")
         }
       end

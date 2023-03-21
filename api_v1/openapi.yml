@@ -356,11 +356,6 @@ components:
           description: Tags associated to the product
           items:
             type: string
-        identifiers:
-          type: array
-          description: Known identifiers (purl, repology, cpe...) associated to the product
-          items:
-            $ref: '#/components/schemas/Identifier'
         uri:
           type: string
           format: uri
@@ -387,12 +382,16 @@ components:
           description: Tags associated to the product
           items:
             type: string
+        # Additional properties (compared to ProductSummary)
+        versionCommand:
+          type: string
+          description: Command that can be used to check the current product version.
+          example: cat /etc/os-release
         identifiers:
           type: array
           description: Known identifiers (purl, repology, cpe...) associated to the product
           items:
             $ref: '#/components/schemas/Identifier'
-        # Additional properties (compared to ProductSummary)
         labels:
           type: object
           description: Product labels.
@@ -438,10 +437,6 @@ components:
               nullable: true
               description: Link to the product release policy.
               example: https://wiki.debian.org/DebianReleases
-        versionCommand:
-          type: string
-          description: Command that can be used to check the current product version.
-          example: cat /etc/os-release
         cycles:
           type: array
           description: Product release cycles.
