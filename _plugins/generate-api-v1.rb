@@ -273,9 +273,12 @@ module ApiV1
       @name = "index.json"
       @data = {}
       @data['layout'] = 'json'
-      @data['data'] = metadata
-      @data['data']['result'] = data
+
+      @data['data'] = {}
       @data['data']['schema_version'] = ApiV1::VERSION
+      @data['data']['generated_at'] = site.time.iso8601
+      @data['data'].merge!(metadata)
+      @data['data']['result'] = data
 
       self.process(@name)
     end
