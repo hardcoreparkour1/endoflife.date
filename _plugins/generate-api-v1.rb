@@ -233,6 +233,7 @@ module ApiV1
       def product_summary_to_json(site, product)
         {
           name: product.data['id'],
+          aliases: product.data['aliases'],
           label: product.data['title'],
           category: product.data['category'],
           tags: product.data['tags'],

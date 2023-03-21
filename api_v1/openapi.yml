@@ -348,6 +348,11 @@ components:
           type: string
           description: Label of the product
           example: Ubuntu
+        aliases:
+          type: array
+          description: Aliases declared for the product (derived from alternate_urls)
+          items:
+            type: string
         category:
           type: string
           description: Category of the product
@@ -374,6 +379,11 @@ components:
           type: string
           description: Label of the product
           example: Ubuntu
+        aliases:
+          type: array
+          description: Aliases declared for the product (derived from alternate_urls)
+          items:
+            type: string
         category:
           type: string
           description: Category of the product
