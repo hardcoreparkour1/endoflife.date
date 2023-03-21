@@ -7,7 +7,8 @@ v1:
 
 - feels more _Restful_ (#2431),
 - expose almost all product's data (#394, #759, #2062, #2595),
-- expose new metadata such as schema version (#2331), counts (for lists) or last modified date,
+- expose new metadata such as `schema version` (#2331), `total` (for lists), `generated_at` or
+  `last modified` date,
 - is easier to consume thanks to:
   - new computed fields such as `is_maintained`,
   - the replacement of fields that were using union types with two separate single-type fields:
@@ -28,7 +29,7 @@ The API v1 is now generated using a Jekyll Generator (see https://jekyllrb.com/d
 instead of a custom script.
 
 Note that the API v0 is still generated to give time to users to migrate to API v1. It will be
-decommissioned one year after the API v1 release date (TODO : provide exact date).
+decommissioned at least one year after the API v1 release date.
 
 API v1 documentation can be seen on <https://endoflife.date/docs/api/v1/>.
 The old API v0 documentation can still be seen on <https://endoflife.date/docs/api/>.
@@ -36,20 +37,38 @@ The old API v0 documentation can still be seen on <https://endoflife.date/docs/a
 ### Changes in the "All products" endpoint
 
 - Path has been changed from `api/all.json` to `api/v1/products/`
-- Response has been changed from a simple array to a JSON document. This made it possible to add endoflife-level data, such as the number of products.
-- Array elements have been changed from a simple string to a full JSON document. This made it possible to expose new data, such as product category and tags (#2062).
+- Response has been changed from a simple array of strings to a JSON document.
+  This made it possible to include additional metadata, such as the schema version and the number of
+  products.
+- Response items has been changed from a simple string (the product name) to a JSON document (#2062).
+  This made it possible to include additional information about the product, such as its category
+  and tags.
+- See <https://endoflife.date/docs/api/v1/#/default/get_products> for a detailed description of the
+  response.
 
 ### Changes in the "Product" endpoint
 
 - Path has been changed from `api/<product>.json` to `api/v1/products/<product>/`.
-- Response has been changed from a simple array to a JSON document. This made it possible to expose product-level data, such as product category and tags (#2062).
-- Cycles data now always contain all the release cycles properties, even if they are null (example: `discontinued`, `latest`, `latestReleaseDate`, `support`...).
+- Response has been changed from a simple array of versions to a JSON document.
+  This made it possible to include :
+  - additional metadata, such as the schema version and the last modified date,
+  - product-level information, such as the product label or category (#2062).
+- Cycles data now always contain all the release cycles properties, even if they are null
+  (example: `discontinued`, `latest`, `latestReleaseDate`, `support`...).
+- See <https://endoflife.date/docs/api/v1/#/default/get_products__product__> for a detailed
+  description of the response.
 
 ### Changes in the "Cycle" endpoint
 
 - Path has been changed from `api/<product>/<cycle>.json` to `api/v1/products/<product>/cycles/<cycle>/`.
-- Cycles data now always contain all the release cycles properties, even if they are null (example: `discontinued`, `latest`, `latestReleaseDate`, `support`...).
-- A special `/api/v1/products/<product>/cycles/latest/` cycle, containing the same data as the latest cycle, has been added (#2078).
+- Response has been changed to make it possible to include additional metadata, such as the schema
+  version and the last modified date,
+- Cycles data now always contain all the release cycles properties, even if they are null
+  (example: `discontinued`, `latest`, `latestReleaseDate`, `support`...).
+- A special `/api/v1/products/<product>/cycles/latest/` cycle, containing the same data as the
+  latest cycle, has been added (#2078).
+- See <https://endoflife.date/docs/api/v1/#/default/get_products__product__cycles__cycle_> for a
+  detailed description of the response.
 
 ### Changes in 404 error responses
 
@@ -59,10 +78,12 @@ rule and [takes precedence](https://docs.netlify.com/routing/redirects/#rule-pro
 
 ### New endpoints
 
-- `/api/v1/categories/` - list categories used on endoflife.date
-- `/api/v1/categories/<category>` - list products having the given category
-- `/api/v1/tags/` - list tags used on endoflife.date
-- `/api/v1/tags/<tag>` - list products having the given tag
+- `/api/v1/categories/`: Get a list of all categories.
+- `/api/v1/categories/<category>`: Get a list of all products within the given category.
+- `/api/v1/tags/`: Get a list of all tags.
+- `/api/v1/tags/<tag>`: Get a list of all products having the given tag.
+- `/api/v1/products/full/`: Get a list of all products with all their details (including cycles).
+  This endpoint provides a dump of nearly all the endoflife.date data.
 
 
 
@@ -70,6 +91,6 @@ rule and [takes precedence](https://docs.netlify.com/routing/redirects/#rule-pro
 
 On 2023-03-02 the v0 endpoints were:
 
-- "All products" (`/api/all.json`) : Return a list of all products.
-- "Product" (`/api/{product}.json`) : Get EoL dates of all cycles for a given product.
-- "Cycle" (`/api/{product}/{cycle}.json`) : Details of a single release cycle of a given product.
+- "All products" (`/api/all.json`) : Get a list of all product names.
+- "Product" (`/api/{product}.json`) : Get all release cycles details for a given product.
+- "Cycle" (`/api/{product}/{cycle}.json`) : Get details for a single release cycle of a given product.

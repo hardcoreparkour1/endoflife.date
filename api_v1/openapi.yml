@@ -62,8 +62,9 @@ paths:
   /products/full/:
     get:
       summary: >
-        List all the products referenced on endoflife.date.
-        The full products' data is returned by this endpoint.
+        List all the products referenced on endoflife.date, with all their details.
+        The full products data is returned by this endpoint, making the result a dump of nearly all
+        endoflife.date data.
       responses:
         '200':
           description: successful operation
