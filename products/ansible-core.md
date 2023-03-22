@@ -1,17 +1,18 @@
 ---
-permalink: /ansible-core
 title: Ansible-core
+category: framework
+iconSlug: ansible
+permalink: /ansible-core
 versionCommand: ansible --version
 releasePolicyLink: https://docs.ansible.com/ansible-core/devel/reference_appendices/release_and_maintenance.html
 changelogTemplate: https://github.com/ansible/ansible/blob/stable-__RELEASE_CYCLE__/changelogs/CHANGELOG-v__RELEASE_CYCLE__.rst
 releaseDateColumn: true
-sortReleasesBy: "releaseDate"
 activeSupportColumn: false
 eolColumn: Supported
-iconSlug: ansible
-category: framework
+
 auto:
 -   git: https://github.com/ansible/ansible.git
+
 releases:
 -   releaseCycle: "2.14"
     releaseDate: 2022-11-07
@@ -51,14 +52,15 @@ releases:
 
 ---
 
-> [Ansible](https://www.ansible.com/) is an open-source software provisioning, configuration management and application-deployment tool enabling infrastructure as code. It runs on many Unix-like systems, and can configure both Unix-like systems and Microsoft Windows.
+> [Ansible](https://www.ansible.com/) is an open-source software provisioning, configuration
+> management and application-deployment tool enabling infrastructure as code. It runs on many
+> Unix-like systems, and can configure both Unix-like systems and Microsoft Windows.
 
-The `ansible-core` package has a graduated maintenance structure that extends to three major releases. For detailed information, see Ansible [Releases and maintenance][maintenance].
+The `ansible-core` package has a graduated maintenance structure that extends to three major
+releases. For detailed information, see Ansible [Releases and maintenance](https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html).
 
-See the [ansible-core Roadmap][roadmap] for upcoming release details.
-
-[roadmap]: https://docs.ansible.com/ansible-core/devel/roadmap/ansible_core_roadmap_index.html
-[maintenance]: https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html
+See the [ansible-core Roadmap](https://docs.ansible.com/ansible-core/devel/roadmap/ansible_core_roadmap_index.html)
+for upcoming release details.
 
 ## Python Compatibility
 
