@@ -57,7 +57,7 @@ releases:
 -   releaseCycle: "12"
     releaseDate: 2018-09-17
     support: 2019-09-19
-    eol: false
+    eol: True
     latest: "12.5.7"
     latestReleaseDate: 2023-01-23
     link: https://support.apple.com/HT209084
